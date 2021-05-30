@@ -6,7 +6,7 @@
 
     <groupId>com.github.youngteurus</groupId>
     <artifactId>DatabaseLibrary</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>
