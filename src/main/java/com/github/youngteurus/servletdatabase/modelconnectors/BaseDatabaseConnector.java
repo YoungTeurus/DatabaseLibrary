@@ -4,7 +4,6 @@ import com.github.youngteurus.servletdatabase.database.DataBase;
 import com.github.youngteurus.servletdatabase.database.DataBaseConnectionException;
 import com.github.youngteurus.servletdatabase.database.constructor.Parameter;
 import com.github.youngteurus.servletdatabase.database.constructor.StatementConstructor;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -54,18 +53,18 @@ public abstract class BaseDatabaseConnector<T> implements DatabaseConnector<T> {
     }
 
     public final boolean addAndGetSuccess(T object) throws SQLException, DataBaseConnectionException {
-        int result = getResultOfAddingObject(object);
+        List<Parameter> params = getParametersForInsert(object);
+
+        int result = addByParameters(params);
 
         return result > 0;
     }
 
-    private int getResultOfAddingObject(T object) throws SQLException, DataBaseConnectionException {
+    protected final int addByParameters(List<Parameter> parameters) throws SQLException, DataBaseConnectionException{
         Connection connection = db.getConnection();
 
-        List<Parameter> params = getParametersForInsert(object);
-
         PreparedStatement ps = StatementConstructor.constructInsertStatementFromParametersList(
-                connection, getTableName(), params
+                connection, getTableName(), parameters
         );
 
         return db.executeUpdateStatement(ps);
@@ -74,6 +73,23 @@ public abstract class BaseDatabaseConnector<T> implements DatabaseConnector<T> {
     protected abstract List<Parameter> getParametersForInsert(T object);
 
     public final int removeAndGetRemovedCount(T object) throws SQLException, DataBaseConnectionException {
-        throw new NotImplementedException();
+        List<Parameter> params = getParametersForRemove(object);
+
+        int removeCount = removeByParameters(params);
+
+        return removeCount;
     }
+
+    protected final int removeByParameters(List<Parameter> parameters) throws SQLException, DataBaseConnectionException {
+        Connection connection = db.getConnection();
+
+        PreparedStatement ps = StatementConstructor.constructDeleteStatementFromParametersList(
+                connection, getTableName(), parameters
+        );
+
+        int removeCount = db.executeUpdateStatement(ps);
+        return removeCount;
+    }
+
+    protected abstract List<Parameter> getParametersForRemove(T object);
 }
