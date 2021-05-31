@@ -1,5 +1,7 @@
 package com.github.youngteurus.servletdatabase.database.constructor;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -13,6 +15,16 @@ public class StatementConstructor {
 
     public static PreparedStatement constructInsertStatementFromParametersList(Connection connection, String tableName, List<Parameter> parameters) throws SQLException {
         String sql = constructInsertSQLQuery(tableName, parameters);
+        return prepareStatement(connection, sql, parameters);
+    }
+
+    public static PreparedStatement constructInsertStatementReturningIDFromParametersList(Connection connection, String tableName, List<Parameter> parameters) throws SQLException {
+        String sql = constructInsertSQLQueryReturningID(tableName, parameters);
+        return prepareStatement(connection, sql, parameters);
+    }
+
+    public static PreparedStatement constructRemoveStatementFromParametersList(Connection connection, String tableName, List<Parameter> parameters) throws SQLException {
+        String sql = constructRemoveSQLQuery(tableName, parameters);
         return prepareStatement(connection, sql, parameters);
     }
 
@@ -39,10 +51,19 @@ public class StatementConstructor {
         return sql.toString();
     }
 
+    static String constructInsertSQLQueryReturningID(String tableName, List<Parameter> parameters){
+        // Составляем sql запрос по типу:
+        // INSERT INTO public."users" ("param_1","param_2","param_3") Values (?,?,?) RETURNING id
+        String insertSQL = constructInsertSQLQuery(tableName, parameters);
+        insertSQL += " RETURNING id";
+
+        return insertSQL;
+    }
+
     static String constructInsertSQLQuery(String tableName, List<Parameter> parameters){
         StringBuilder sql = new StringBuilder();
         // Составляем sql запрос по типу:
-        // INSERT INTO public."users" ("param_1","param_2","param_3") Values (?,?,?) RETURNING id
+        // INSERT INTO public."users" ("param_1","param_2","param_3") Values (?,?,?)
         sql.append("INSERT INTO public.").append("\"").append(tableName).append("\" ")
                 .append("(");
         if (parameters.size() == 0){
@@ -72,9 +93,15 @@ public class StatementConstructor {
             }
             currentParameter++;
         }
-        sql.append(") RETURNING id");
+
+        sql.append(")");
 
         return sql.toString();
+    }
+
+    static String constructRemoveSQLQuery(String tableName, List<Parameter> parameters){
+        // TODO: реализовать генерацию запроса для удаления элемента
+        throw new NotImplementedException();
     }
 
     static PreparedStatement prepareStatement(Connection connection, String sql, List<Parameter> parameters) throws SQLException{

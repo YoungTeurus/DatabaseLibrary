@@ -6,7 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public interface DataBase {
-    ResultSet executeStatement(PreparedStatement preparedStatement) throws SQLException;
+    ResultSet executeQueryStatement(PreparedStatement preparedStatement) throws SQLException;
+    int executeUpdateStatement(PreparedStatement preparedStatement) throws SQLException;
 
     Connection getConnection() throws DataBaseConnectionException;
 }

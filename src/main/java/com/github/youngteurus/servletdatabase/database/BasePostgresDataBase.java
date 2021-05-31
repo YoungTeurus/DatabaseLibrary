@@ -39,8 +39,13 @@ public class BasePostgresDataBase implements DataBase {
         }
     }
 
-    public ResultSet executeStatement(PreparedStatement preparedStatement) throws SQLException {
+    public ResultSet executeQueryStatement(PreparedStatement preparedStatement) throws SQLException {
         return preparedStatement.executeQuery();
+    }
+
+    @Override
+    public int executeUpdateStatement(PreparedStatement preparedStatement) throws SQLException {
+        return preparedStatement.executeUpdate();
     }
 
     public Connection getConnection() throws DataBaseConnectionException {

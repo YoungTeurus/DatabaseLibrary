@@ -6,9 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface DatabaseConnector<T> {
-    T getById(long id) throws SQLException, DataBaseConnectionException;
     List<T> getAll() throws SQLException, DataBaseConnectionException;
-    long addAndReturnId(T object) throws SQLException, DataBaseConnectionException;
-    boolean removeAndReturnSuccess(long id) throws SQLException, DataBaseConnectionException;
-    boolean removeAndReturnSuccess(T object) throws SQLException, DataBaseConnectionException;
+    boolean addAndGetSuccess(T object) throws SQLException, DataBaseConnectionException;
+    int removeAndGetRemovedCount(T object) throws SQLException, DataBaseConnectionException;
 }
