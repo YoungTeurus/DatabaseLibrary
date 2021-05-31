@@ -17,8 +17,6 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class AbstractModelDatabaseConnector<T extends AbstractModel> extends BaseDatabaseConnector<T> {
-    protected DataBase db;
-
     protected AbstractModelDatabaseConnector(DataBase db){
         super(db);
     }
