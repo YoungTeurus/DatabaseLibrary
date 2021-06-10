@@ -14,9 +14,18 @@ public abstract class BaseServlet extends HttpServlet implements Servlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        setAccessControlHeaders(resp);
         getRequestParameters(req);
         Object answer = processParameters();
         sendAnswer(answer, resp);
+    }
+
+    private void setAccessControlHeaders(HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token");
     }
 
     protected abstract Object processParameters();
@@ -41,6 +50,7 @@ public abstract class BaseServlet extends HttpServlet implements Servlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        setAccessControlHeaders(resp);
         getRequestParameters(req);
     }
 
